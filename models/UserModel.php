@@ -33,6 +33,10 @@ class UserModel
     // Ambil user berdasarkan ID
     public function findById($id)
     {
+        if (empty($id) || !is_numeric($id)) {
+            return null;
+        }
+        
         $idEsc = (int) $id;
         $sql   = "
             SELECT id, first_name, last_name, email, phone, status, role, join_date
@@ -40,10 +44,18 @@ class UserModel
             WHERE id = $idEsc
             LIMIT 1
         ";
+        
         $result = mysqli_query($this->conn, $sql);
-        if ($result && mysqli_num_rows($result) === 1) {
+        
+        if (!$result) {
+            error_log('UserModel::findById Error: ' . mysqli_error($this->conn));
+            return null;
+        }
+        
+        if (mysqli_num_rows($result) === 1) {
             return mysqli_fetch_assoc($result);
         }
+        
         return null;
     }
 

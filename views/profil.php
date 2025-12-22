@@ -1,12 +1,12 @@
 <?php
 session_start();
-require_once '../config/koneksi.php';
-require_once '../models/UserModel.php';
+require_once __DIR__ . '/../config/koneksi.php';
+require_once __DIR__ . '/../models/UserModel.php';
 
 $pageTitle = 'ReservaStay - Profil';
 
 // Cek apakah user sudah login
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     header('Location: login_register.php');
     exit;
 }
@@ -15,7 +15,7 @@ if (!isset($_SESSION['user_id'])) {
 $userModel = new UserModel($conn);
 $user = $userModel->findById($_SESSION['user_id']);
 
-if (!$user) {
+if (!$user || empty($user)) {
     session_destroy();
     header('Location: login_register.php');
     exit;
