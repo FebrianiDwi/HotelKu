@@ -11,6 +11,7 @@ $pageTitle = 'ReservaStay - Blog & Artikel';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <!-- Blog Page -->
     <section id="blog" class="page">
         <div class="container">
@@ -44,6 +45,8 @@ $pageTitle = 'ReservaStay - Blog & Artikel';
             </div>
         </div>
     </section>
+
+    <?php include '../includes/footer.php'; ?>
 
     <script src="../script.js"></script>
 </body>

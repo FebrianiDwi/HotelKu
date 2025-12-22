@@ -11,6 +11,7 @@ $pageTitle = 'ReservaStay - Check-in Online';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <!-- Check-in Page -->
     <section id="checkin" class="page">
         <div class="container">
@@ -39,6 +40,8 @@ $pageTitle = 'ReservaStay - Check-in Online';
             </div>
         </div>
     </section>
+
+    <?php include '../includes/footer.php'; ?>
 
     <!-- Modal untuk CRUD Operations -->
     <div class="modal-overlay" id="modalOverlay">

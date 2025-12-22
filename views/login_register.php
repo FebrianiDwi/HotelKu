@@ -11,16 +11,15 @@ $pageTitle = 'ReservaStay - Login & Register';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <!-- Main Content Container -->
+    <?php include '../includes/navbar.php'; ?>
     <main id="mainContent">
-        <!-- Login Page -->
         <section id="login" class="page">
             <div class="container">
                 <div class="page">
                     <div class="form-container">
                         <div id="loginFormContainer">
                             <h2 class="form-title">Masuk ke Akun Anda</h2>
-                            <form id="loginForm" action="../functions/login_process.php" method="POST">
+                            <form id="loginForm" action="../controllers/login.php" method="POST">
                                 <div class="form-group">
                                     <label for="loginEmail" class="form-label">Email</label>
                                     <input type="email" id="loginEmail" name="email" class="form-input" placeholder="email@contoh.com" required>
@@ -45,7 +44,7 @@ $pageTitle = 'ReservaStay - Login & Register';
                         
                         <div id="registerFormContainer" class="hidden">
                             <h2 class="form-title">Buat Akun Baru</h2>
-                            <form id="registerForm" action="../functions/register_process.php" method="POST">
+                            <form id="registerForm" action="../controllers/register.php" method="POST">
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="registerFirstName" class="form-label">Nama Depan</label>
@@ -97,12 +96,13 @@ $pageTitle = 'ReservaStay - Login & Register';
                 </div>
             </div>
         </section>
+    </main>
+
+    <?php include '../includes/footer.php'; ?>
 
     <script src="../script.js"></script>
     <script>
-    // Inisialisasi Aplikasi
     document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi komponen
         initForms();
     });
     </script>

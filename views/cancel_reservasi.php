@@ -11,6 +11,7 @@ $pageTitle = 'ReservaStay - Pembatalan Reservasi';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <!-- Cancellation Page -->
     <section id="cancellation" class="page">
         <div class="container">
@@ -80,6 +81,8 @@ $pageTitle = 'ReservaStay - Pembatalan Reservasi';
             </div>
         </div>
     </section>
+
+    <?php include '../includes/footer.php'; ?>
 
     <!-- Modal untuk CRUD Operations -->
     <div class="modal-overlay" id="modalOverlay">
