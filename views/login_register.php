@@ -1,5 +1,18 @@
 <?php
+session_start();
+require_once __DIR__ . '/../config/koneksi.php';
+
+// Jika sudah login, redirect ke profil
+if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+    header('Location: profil.php');
+    exit;
+}
+
 $pageTitle = 'ReservaStay - Login & Register';
+
+// Ambil pesan error dari query string
+$loginError = isset($_GET['error']) ? $_GET['error'] : '';
+$registerError = isset($_GET['register_error']) ? $_GET['register_error'] : '';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -19,6 +32,11 @@ $pageTitle = 'ReservaStay - Login & Register';
                     <div class="form-container">
                         <div id="loginFormContainer">
                             <h2 class="form-title">Masuk ke Akun Anda</h2>
+                            <?php if ($loginError === 'empty'): ?>
+                                <div class="alert alert-danger" style="margin-bottom: 20px; padding: 10px; background: #fee; color: #c33; border-radius: 4px;">Email dan password harus diisi!</div>
+                            <?php elseif ($loginError === 'invalid'): ?>
+                                <div class="alert alert-danger" style="margin-bottom: 20px; padding: 10px; background: #fee; color: #c33; border-radius: 4px;">Email atau password salah!</div>
+                            <?php endif; ?>
                             <form id="loginForm" action="../controllers/login.php" method="POST">
                                 <div class="form-group">
                                     <label for="loginEmail" class="form-label">Email</label>
@@ -44,6 +62,15 @@ $pageTitle = 'ReservaStay - Login & Register';
                         
                         <div id="registerFormContainer" class="hidden">
                             <h2 class="form-title">Buat Akun Baru</h2>
+                            <?php if ($registerError === 'empty'): ?>
+                                <div class="alert alert-danger" style="margin-bottom: 20px; padding: 10px; background: #fee; color: #c33; border-radius: 4px;">Semua field harus diisi!</div>
+                            <?php elseif ($registerError === 'nomatch'): ?>
+                                <div class="alert alert-danger" style="margin-bottom: 20px; padding: 10px; background: #fee; color: #c33; border-radius: 4px;">Password dan konfirmasi password tidak cocok!</div>
+                            <?php elseif ($registerError === 'exists'): ?>
+                                <div class="alert alert-danger" style="margin-bottom: 20px; padding: 10px; background: #fee; color: #c33; border-radius: 4px;">Email sudah terdaftar!</div>
+                            <?php elseif ($registerError === 'failed'): ?>
+                                <div class="alert alert-danger" style="margin-bottom: 20px; padding: 10px; background: #fee; color: #c33; border-radius: 4px;">Registrasi gagal, silakan coba lagi!</div>
+                            <?php endif; ?>
                             <form id="registerForm" action="../controllers/register.php" method="POST">
                                 <div class="form-row">
                                     <div class="form-group">
