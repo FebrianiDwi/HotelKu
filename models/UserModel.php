@@ -62,12 +62,22 @@ class UserModel
     // Simpan user baru dengan password yang di-hash
     public function createUser($firstName, $lastName, $email, $passwordPlain, $phone)
     {
+        if (empty($firstName) || empty($lastName) || empty($email) || empty($passwordPlain) || empty($phone)) {
+            error_log('UserModel::createUser Error: Semua field harus diisi');
+            return false;
+        }
+
         $firstNameEsc = mysqli_real_escape_string($this->conn, $firstName);
         $lastNameEsc  = mysqli_real_escape_string($this->conn, $lastName);
         $emailEsc     = mysqli_real_escape_string($this->conn, $email);
         $phoneEsc     = mysqli_real_escape_string($this->conn, $phone);
 
         $passwordHash = password_hash($passwordPlain, PASSWORD_BCRYPT);
+        if (!$passwordHash) {
+            error_log('UserModel::createUser Error: Gagal hash password');
+            return false;
+        }
+        
         $passwordEsc  = mysqli_real_escape_string($this->conn, $passwordHash);
 
         $sql = "
@@ -75,7 +85,16 @@ class UserModel
             VALUES ('$firstNameEsc', '$lastNameEsc', '$emailEsc', '$passwordEsc', '$phoneEsc', 'active', 'user', CURDATE())
         ";
 
-        return mysqli_query($this->conn, $sql);
+        $result = mysqli_query($this->conn, $sql);
+        
+        if (!$result) {
+            $error = mysqli_error($this->conn);
+            error_log('UserModel::createUser SQL Error: ' . $error);
+            error_log('UserModel::createUser SQL Query: ' . $sql);
+            return false;
+        }
+
+        return true;
     }
 }
 

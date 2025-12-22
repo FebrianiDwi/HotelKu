@@ -174,14 +174,25 @@ function initForms() {
     // Form Login
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', handleLoginSubmit);
+        loginForm.addEventListener('submit', function(e) {
+            const result = handleLoginSubmit(e);
+            if (result === false) {
+                e.preventDefault();
+            }
+            // Jika result === true, biarkan form submit normal
+        });
     }
     
-    // Form Register
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegisterSubmit);
-    }
+    // Form Register - DISABLED, biarkan form submit langsung ke PHP tanpa JavaScript
+    // const registerForm = document.getElementById('registerForm');
+    // if (registerForm) {
+    //     registerForm.addEventListener('submit', function(e) {
+    //         const result = handleRegisterSubmit(e);
+    //         if (result === false) {
+    //             e.preventDefault();
+    //         }
+    //     });
+    // }
     
     // Form Check-in
     const checkinForm = document.getElementById('checkinForm');
@@ -464,50 +475,38 @@ function getRoomTypeName(roomType) {
 
 // Fungsi untuk Handle Submit Form Login
 function handleLoginSubmit(e) {
-    e.preventDefault();
-    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
-    // Validasi sederhana
+    // Validasi client-side
     if (!email || !password) {
+        e.preventDefault();
         showToast('Harap isi semua field', 'error');
-        return;
+        return false;
     }
     
-    // Simulasi login
-    showLoading();
-    
-    setTimeout(() => {
-        hideLoading();
-        
-        // Simulasi login berhasil
-        showToast('Login berhasil! Mengarahkan ke halaman profil...', 'success');
-        
-        // Update navigasi
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        const profileLink = document.querySelector('a[href="#profile"]');
-        if (profileLink) profileLink.classList.add('active');
-        
-        // Tampilkan halaman profil
-        setTimeout(() => {
-            window.location.hash = 'profile';
-        }, 1500);
-    }, 1000);
+    // Jika validasi berhasil, biarkan form submit normal ke server
+    // Form akan submit ke action="../controllers/login.php" method="POST"
+    return true;
 }
 
 // Fungsi untuk Handle Submit Form Register
 function handleRegisterSubmit(e) {
-    e.preventDefault();
-    
     const firstName = document.getElementById('registerFirstName').value;
     const lastName = document.getElementById('registerLastName').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
     
-    // Validasi
+    // Validasi client-side
     let isValid = true;
+    
+    // Clear previous errors
+    document.querySelectorAll('#registerForm .error').forEach(el => el.classList.remove('error'));
+    document.querySelectorAll('#registerForm .form-feedback').forEach(el => {
+        el.textContent = '';
+        el.className = 'form-feedback';
+    });
     
     if (!firstName) {
         document.getElementById('registerFirstName').classList.add('error');
@@ -544,24 +543,14 @@ function handleRegisterSubmit(e) {
         isValid = false;
     }
     
-    if (!isValid) return;
+    // Jika validasi gagal, prevent submit
+    if (!isValid) {
+        e.preventDefault();
+        return false;
+    }
     
-    // Simulasi pendaftaran
-    showLoading();
-    
-    setTimeout(() => {
-        hideLoading();
-        
-        // Simulasi pendaftaran berhasil
-        showToast('Pendaftaran berhasil! Silakan login dengan akun Anda.', 'success');
-        
-        // Kembali ke form login
-        document.getElementById('registerFormContainer').classList.add('hidden');
-        document.getElementById('loginFormContainer').classList.remove('hidden');
-        
-        // Reset form
-        document.getElementById('registerForm').reset();
-    }, 1500);
+    // Jika validasi berhasil, biarkan form submit normal ke server
+    return true;
 }
 
 // Fungsi untuk Handle Submit Form Check-in

@@ -62,7 +62,9 @@ class AuthController
             exit;
         }
 
-        if ($this->userModel->createUser($firstName, $lastName, $email, $password, $phone)) {
+        $createResult = $this->userModel->createUser($firstName, $lastName, $email, $password, $phone);
+        
+        if ($createResult) {
             $user = $this->userModel->findByEmail($email);
             if ($user) {
                 $_SESSION['user_id']    = $user['id'];
@@ -71,9 +73,14 @@ class AuthController
 
                 header('Location: ../views/profil.php');
                 exit;
+            } else {
+                error_log('AuthController::register Error: User berhasil dibuat tapi tidak ditemukan setelah insert');
+                header('Location: ../views/login_register.php?register_error=failed');
+                exit;
             }
         }
 
+        error_log('AuthController::register Error: Gagal membuat user baru');
         header('Location: ../views/login_register.php?register_error=failed');
         exit;
     }

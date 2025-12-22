@@ -12,9 +12,7 @@ $pageTitle = 'ReservaStay - Beranda';
 </head>
 <body>
     <?php include '../includes/navbar.php'; ?>
-    <!-- Main Content Container -->
     <main id="mainContent">
-        <!-- Home/Landing Page -->
         <section id="home" class="page active">
             <div class="hero">
                 <div class="container">
@@ -33,7 +31,6 @@ $pageTitle = 'ReservaStay - Beranda';
                 </div>
             </div>
             
-            <!-- Stats Section -->
             <div class="stats-section">
                 <div class="container">
                     <div class="stats-container">
