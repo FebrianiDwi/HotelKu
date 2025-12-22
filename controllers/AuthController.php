@@ -25,7 +25,6 @@ class AuthController
 
         $user = $this->userModel->findByEmail($email);
 
-        // Verifikasi password dengan hash (password_hash / password_verify)
         if ($user && isset($user['password']) && password_verify($password, $user['password'])) {
             $_SESSION['user_id']    = $user['id'];
             $_SESSION['user_name']  = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
@@ -58,14 +57,12 @@ class AuthController
             exit;
         }
 
-        // Cek email sudah terdaftar atau belum
         if ($this->userModel->findByEmail($email)) {
             header('Location: ../views/login_register.php?register_error=exists');
             exit;
         }
 
         if ($this->userModel->createUser($firstName, $lastName, $email, $password, $phone)) {
-            // Bisa langsung login otomatis
             $user = $this->userModel->findByEmail($email);
             if ($user) {
                 $_SESSION['user_id']    = $user['id'];

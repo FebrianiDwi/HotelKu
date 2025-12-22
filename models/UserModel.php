@@ -30,6 +30,23 @@ class UserModel
         return null;
     }
 
+    // Ambil user berdasarkan ID
+    public function findById($id)
+    {
+        $idEsc = (int) $id;
+        $sql   = "
+            SELECT id, first_name, last_name, email, phone, status, role, join_date
+            FROM users
+            WHERE id = $idEsc
+            LIMIT 1
+        ";
+        $result = mysqli_query($this->conn, $sql);
+        if ($result && mysqli_num_rows($result) === 1) {
+            return mysqli_fetch_assoc($result);
+        }
+        return null;
+    }
+
     // Simpan user baru dengan password yang di-hash
     public function createUser($firstName, $lastName, $email, $passwordPlain, $phone)
     {

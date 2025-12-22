@@ -1,5 +1,28 @@
 <?php
+session_start();
+require_once '../config/koneksi.php';
+require_once '../models/UserModel.php';
+
 $pageTitle = 'ReservaStay - Profil';
+
+// Cek apakah user sudah login
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login_register.php');
+    exit;
+}
+
+// Ambil data user dari database
+$userModel = new UserModel($conn);
+$user = $userModel->findById($_SESSION['user_id']);
+
+if (!$user) {
+    session_destroy();
+    header('Location: login_register.php');
+    exit;
+}
+
+// Format tanggal join
+$joinDate = isset($user['join_date']) ? date('d F Y', strtotime($user['join_date'])) : '-';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -19,7 +42,7 @@ $pageTitle = 'ReservaStay - Profil';
                 <div class="dashboard-header">
                     <h2 class="dashboard-title">Profil Pengguna</h2>
                     <div>
-                        <a href="../functions/logout.php" class="btn btn-danger">Keluar</a>
+                        <a href="../controllers/logout.php" class="btn btn-danger">Keluar</a>
                     </div>
                 </div>
                 
@@ -27,10 +50,12 @@ $pageTitle = 'ReservaStay - Profil';
                     <div class="form-row">
                         <div class="form-group">
                             <h3 style="margin-bottom: 20px;">Informasi Pribadi</h3>
-                            <p><strong>Nama:</strong> <span id="profileName">-</span></p>
-                            <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
-                            <p><strong>Telepon:</strong> <span id="profilePhone">-</span></p>
-                            <p><strong>Member sejak:</strong> <span id="profileJoinDate">-</span></p>
+                            <p><strong>Nama:</strong> <?php echo htmlspecialchars(trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))); ?></p>
+                            <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email'] ?? '-'); ?></p>
+                            <p><strong>Telepon:</strong> <?php echo htmlspecialchars($user['phone'] ?? '-'); ?></p>
+                            <p><strong>Member sejak:</strong> <?php echo htmlspecialchars($joinDate); ?></p>
+                            <p><strong>Status:</strong> <?php echo htmlspecialchars(ucfirst($user['status'] ?? '-')); ?></p>
+                            <p><strong>Role:</strong> <?php echo htmlspecialchars(ucfirst($user['role'] ?? '-')); ?></p>
                         </div>
                         <div class="form-group">
                             <h3 style="margin-bottom: 20px;">Statistik Reservasi</h3>
