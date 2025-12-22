@@ -11,6 +11,7 @@ $pageTitle = 'ReservaStay - Dashboard Admin';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <!-- Dashboard Page -->
     <section id="dashboard" class="page">
         <div class="container">
@@ -143,6 +144,8 @@ $pageTitle = 'ReservaStay - Dashboard Admin';
             </div>
         </div>
     </section>
+
+    <?php include '../includes/footer.php'; ?>
 
     <!-- Modal untuk CRUD Operations -->
     <div class="modal-overlay" id="modalOverlay">

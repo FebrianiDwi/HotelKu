@@ -12,6 +12,7 @@ $selectedRoomType = isset($_GET['room_type']) ? $_GET['room_type'] : '';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <!-- Main Content Container -->
     <main id="mainContent">
         <!-- Reservation Page -->
@@ -96,6 +97,8 @@ $selectedRoomType = isset($_GET['room_type']) ? $_GET['room_type'] : '';
             </div>
         </section>
     </main>
+
+    <?php include '../includes/footer.php'; ?>
 
     <!-- Modal untuk CRUD Operations -->
     <div class="modal-overlay" id="modalOverlay">

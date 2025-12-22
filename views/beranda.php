@@ -11,6 +11,7 @@ $pageTitle = 'ReservaStay - Beranda';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <!-- Main Content Container -->
     <main id="mainContent">
         <!-- Home/Landing Page -->
@@ -242,6 +243,10 @@ $pageTitle = 'ReservaStay - Beranda';
                 </div>
             </div>
         </section>
+    </main>
+
+    <?php include '../includes/footer.php'; ?>
+
     <script src="../script.js"></script>
     <script>
     // Inisialisasi Aplikasi

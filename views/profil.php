@@ -11,6 +11,7 @@ $pageTitle = 'ReservaStay - Profil';
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <!-- Profile Page -->
     <section id="profile" class="page">
         <div class="container">
@@ -65,6 +66,8 @@ $pageTitle = 'ReservaStay - Profil';
             </div>
         </div>
     </section>
+
+    <?php include '../includes/footer.php'; ?>
 
     <!-- Modal untuk CRUD Operations -->
     <div class="modal-overlay" id="modalOverlay">
