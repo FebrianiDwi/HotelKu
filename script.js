@@ -215,65 +215,15 @@ function initForms() {
 
 // Fungsi untuk Handle Submit Form Reservasi
 function handleReservationSubmit(e) {
-    e.preventDefault();
-    
-    // Validasi form
     const isValid = validateReservationForm();
     
-    if (isValid) {
-        // Simulasi proses reservasi
-        showLoading();
-        
-        // Generate booking code
-        const bookingCode = 'RS' + new Date().getFullYear() + Math.random().toString(36).substring(2, 5).toUpperCase() + Math.floor(Math.random() * 1000);
-        
-        // Simpan data reservasi
-        const reservationData = {
-            id: bookingCode,
-            userId: dummyData.currentUser.id,
-            roomType: document.getElementById('roomType').value,
-            roomCount: parseInt(document.getElementById('roomCount').value),
-            checkin: document.getElementById('checkin').value,
-            checkout: document.getElementById('checkout').value,
-            fullName: document.getElementById('fullName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            specialRequests: document.getElementById('specialRequests').value,
-            status: 'pending',
-            price: calculateTotalPrice()
-        };
-        
-        // Tambahkan ke data dummy
-        dummyData.reservations.push(reservationData);
-        
-        // Simulasi delay server
-        setTimeout(() => {
-            hideLoading();
-            
-            // Tampilkan konfirmasi
-            showModal(
-                'Reservasi Berhasil!',
-                `<p>Reservasi Anda telah berhasil dibuat.</p>
-                    <p><strong>Kode Booking:</strong> ${bookingCode}</p>
-                    <p><strong>Total Pembayaran:</strong> Rp ${reservationData.price.toLocaleString('id-ID')}</p>
-                    <p>Silakan cek email Anda untuk instruksi pembayaran lebih lanjut.</p>`,
-                [
-                    { text: 'Lihat Detail', class: 'btn-primary', action: () => { 
-                        window.location.hash = 'profile';
-                        closeModal();
-                    }},
-                    { text: 'Tutup', class: 'btn-secondary', action: closeModal }
-                ]
-            );
-            
-            // Reset form
-            document.getElementById('reservationForm').reset();
-            updatePriceSummary();
-            
-            // Update dashboard
-            loadDashboardData();
-        }, 1500);
+    if (!isValid) {
+        e.preventDefault();
+        return false;
     }
+    
+    // Biarkan form submit normal ke backend
+    return true;
 }
 
 // Fungsi untuk Validasi Form Reservasi
