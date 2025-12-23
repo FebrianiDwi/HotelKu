@@ -3,6 +3,13 @@ session_start();
 require_once __DIR__ . '/../config/koneksi.php';
 require_once __DIR__ . '/../models/ReservationModel.php';
 
+// Cek apakah user sudah login
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+    $_SESSION['redirect_after_login'] = 'reservasi_form.php';
+    header('Location: login_register.php');
+    exit;
+}
+
 $pageTitle = 'ReservaStay - Reservasi';
 $selectedRoomType = isset($_GET['room_type']) ? $_GET['room_type'] : '';
 

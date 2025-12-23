@@ -3,12 +3,19 @@ session_start();
 require_once __DIR__ . '/../config/koneksi.php';
 require_once __DIR__ . '/../models/ReservationModel.php';
 
+// Cek apakah user sudah login
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+    $_SESSION['redirect_after_login'] = 'reservasi_form.php';
+    header('Location: ../views/login_register.php');
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../views/reservasi_form.php?error=invalid_method');
     exit;
 }
 
-$userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+$userId = $_SESSION['user_id'];
 
 $roomType = isset($_POST['room_type']) ? trim($_POST['room_type']) : '';
 $roomCount = isset($_POST['room_count']) ? (int)$_POST['room_count'] : 0;

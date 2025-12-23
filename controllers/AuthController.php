@@ -30,7 +30,14 @@ class AuthController
             $_SESSION['user_name']  = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
             $_SESSION['user_email'] = $user['email'];
 
-            header('Location: ../views/profil.php');
+            // Redirect ke halaman yang diminta atau profil
+            if (isset($_SESSION['redirect_after_login'])) {
+                $redirect = $_SESSION['redirect_after_login'];
+                unset($_SESSION['redirect_after_login']);
+                header('Location: ../views/' . $redirect);
+            } else {
+                header('Location: ../views/profil.php');
+            }
             exit;
         }
 
@@ -71,7 +78,14 @@ class AuthController
                 $_SESSION['user_name']  = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
                 $_SESSION['user_email'] = $user['email'];
 
-                header('Location: ../views/profil.php');
+                // Redirect ke halaman yang diminta atau profil
+                if (isset($_SESSION['redirect_after_login'])) {
+                    $redirect = $_SESSION['redirect_after_login'];
+                    unset($_SESSION['redirect_after_login']);
+                    header('Location: ../views/' . $redirect);
+                } else {
+                    header('Location: ../views/profil.php');
+                }
                 exit;
             } else {
                 error_log('AuthController::register Error: User berhasil dibuat tapi tidak ditemukan setelah insert');
