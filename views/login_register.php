@@ -69,7 +69,15 @@ $registerError = isset($_GET['register_error']) ? $_GET['register_error'] : '';
                             <?php elseif ($registerError === 'failed'): ?>
                                 <div class="alert alert-danger" style="margin-bottom: 20px; padding: 10px; background: #fee; color: #c33; border-radius: 4px;">
                                     Registrasi gagal, silakan coba lagi!<br>
-                                    <small>Periksa PHP error log untuk detail error.</small>
+                                    <small>
+                                        <?php 
+                                        if (isset($_GET['msg'])) {
+                                            echo htmlspecialchars($_GET['msg']);
+                                        } else {
+                                            echo 'Periksa PHP error log untuk detail error.';
+                                        }
+                                        ?>
+                                    </small>
                                 </div>
                             <?php endif; ?>
                             <form id="registerForm" action="../controllers/register.php" method="POST">

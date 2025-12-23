@@ -7,7 +7,9 @@ class AuthController
 
     public function __construct($conn)
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $this->conn      = $conn;
         require_once __DIR__ . '/../models/UserModel.php';
         $this->userModel = new UserModel($this->conn);
@@ -88,14 +90,15 @@ class AuthController
                 }
                 exit;
             } else {
-                error_log('AuthController::register Error: User berhasil dibuat tapi tidak ditemukan setelah insert');
-                header('Location: ../views/login_register.php?register_error=failed');
+                error_log('AuthController::register Error: User berhasil dibuat tapi tidak ditemukan setelah insert. Email: ' . $email);
+                header('Location: ../views/login_register.php?register_error=failed&msg=not_found');
                 exit;
             }
         }
 
-        error_log('AuthController::register Error: Gagal membuat user baru');
-        header('Location: ../views/login_register.php?register_error=failed');
+        $dbError = mysqli_error($this->conn);
+        error_log('AuthController::register Error: Gagal membuat user baru. DB Error: ' . $dbError);
+        header('Location: ../views/login_register.php?register_error=failed&msg=' . urlencode($dbError));
         exit;
     }
 }
