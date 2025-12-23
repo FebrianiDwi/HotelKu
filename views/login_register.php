@@ -2,7 +2,6 @@
 session_start();
 require_once __DIR__ . '/../config/koneksi.php';
 
-// Jika sudah login, redirect ke profil
 if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
     header('Location: profil.php');
     exit;
@@ -10,7 +9,6 @@ if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
 
 $pageTitle = 'ReservaStay - Login & Register';
 
-// Ambil pesan error dari query string
 $loginError = isset($_GET['error']) ? $_GET['error'] : '';
 $registerError = isset($_GET['register_error']) ? $_GET['register_error'] : '';
 ?>

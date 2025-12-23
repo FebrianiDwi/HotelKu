@@ -9,7 +9,6 @@ class UserModel
         $this->conn = $conn;
     }
 
-    // Ambil user berdasarkan email (untuk login dengan password_verify)
     public function findByEmail($email)
     {
         $emailEsc = mysqli_real_escape_string($this->conn, $email);
@@ -30,7 +29,6 @@ class UserModel
         return null;
     }
 
-    // Ambil user berdasarkan ID
     public function findById($id)
     {
         if (empty($id) || !is_numeric($id)) {
@@ -59,7 +57,6 @@ class UserModel
         return null;
     }
 
-    // Simpan user baru dengan password yang di-hash
     public function createUser($firstName, $lastName, $email, $passwordPlain, $phone)
     {
         if (empty($firstName) || empty($lastName) || empty($email) || empty($passwordPlain) || empty($phone)) {
