@@ -1,5 +1,25 @@
 <?php
+session_start();
+require_once __DIR__ . '/../config/koneksi.php';
+require_once __DIR__ . '/../models/BlogModel.php';
+
 $pageTitle = 'ReservaStay - Blog & Artikel';
+
+$blogModel = new BlogModel($conn);
+$articles = $blogModel->getPublishedPosts(10);
+
+function getArticleIcon($title) {
+    $titleLower = strtolower($title);
+    if (strpos($titleLower, 'kamar') !== false || strpos($titleLower, 'hotel') !== false) {
+        return 'bed';
+    } elseif (strpos($titleLower, 'check-in') !== false || strpos($titleLower, 'perjalanan') !== false) {
+        return 'calendar-alt';
+    } elseif (strpos($titleLower, 'tren') !== false || strpos($titleLower, 'statistik') !== false) {
+        return 'chart-bar';
+    } else {
+        return 'newspaper';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -20,27 +40,37 @@ $pageTitle = 'ReservaStay - Blog & Artikel';
                 <p class="text-center" style="margin-bottom: 50px; color: var(--gray-dark); max-width: 700px; margin-left: auto; margin-right: auto;">Temukan tips, tren, dan informasi terbaru seputar akomodasi dan perjalanan.</p>
                 
                 <div class="articles-grid">
-                    <?php
-                    // Data artikel - akan diambil dari database nanti
-                    $articles = [
-                        ['title' => '5 Tips Memilih Kamar Hotel yang Tepat', 'excerpt' => 'Pelajari cara memilih kamar hotel yang sesuai dengan kebutuhan dan anggaran Anda untuk pengalaman menginap yang lebih nyaman.', 'icon' => 'bed'],
-                        ['title' => 'Manfaat Check-in Online untuk Perjalanan Bisnis', 'excerpt' => 'Tingkatkan efisiensi perjalanan bisnis Anda dengan memanfaatkan fitur check-in online yang menghemat waktu dan tenaga.', 'icon' => 'calendar-alt'],
-                        ['title' => 'Tren Reservasi Akomodasi 2023', 'excerpt' => 'Simak tren terbaru dalam industri reservasi akomodasi dan bagaimana teknologi mengubah cara kita memesan penginapan.', 'icon' => 'chart-bar']
-                    ];
-                    
-                    foreach ($articles as $article):
-                    ?>
-                    <div class="article-card">
-                        <div class="article-image">
-                            <i class="fas fa-<?php echo htmlspecialchars($article['icon']); ?>"></i>
+                    <?php if (empty($articles)): ?>
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                            <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--gray-dark); margin-bottom: 20px;"></i>
+                            <p style="color: var(--gray-dark);">Belum ada artikel yang dipublikasikan.</p>
                         </div>
-                        <div class="article-content">
-                            <h3 class="article-title"><?php echo htmlspecialchars($article['title']); ?></h3>
-                            <p class="article-excerpt"><?php echo htmlspecialchars($article['excerpt']); ?></p>
-                            <a href="#" class="btn btn-secondary btn-small">Baca Selengkapnya</a>
+                    <?php else: ?>
+                        <?php foreach ($articles as $article): 
+                            $excerpt = !empty($article['excerpt']) ? $article['excerpt'] : substr(strip_tags($article['content'] ?? ''), 0, 150) . '...';
+                            $icon = getArticleIcon($article['title']);
+                            $publishedDate = !empty($article['published_at']) ? date('d F Y', strtotime($article['published_at'])) : '';
+                        ?>
+                        <div class="article-card">
+                            <div class="article-image">
+                                <i class="fas fa-<?php echo htmlspecialchars($icon); ?>"></i>
+                            </div>
+                            <div class="article-content">
+                                <h3 class="article-title"><?php echo htmlspecialchars($article['title']); ?></h3>
+                                <?php if ($publishedDate): ?>
+                                    <p style="font-size: 0.85rem; color: var(--gray-dark); margin-bottom: 10px;">
+                                        <i class="fas fa-calendar"></i> <?php echo $publishedDate; ?>
+                                        <?php if (!empty($article['author_name'])): ?>
+                                            <span style="margin-left: 15px;"><i class="fas fa-user"></i> <?php echo htmlspecialchars($article['author_name']); ?></span>
+                                        <?php endif; ?>
+                                    </p>
+                                <?php endif; ?>
+                                <p class="article-excerpt"><?php echo htmlspecialchars($excerpt); ?></p>
+                                <a href="#" class="btn btn-secondary btn-small">Baca Selengkapnya</a>
+                            </div>
                         </div>
-                    </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

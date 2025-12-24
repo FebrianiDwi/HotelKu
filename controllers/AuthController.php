@@ -80,7 +80,6 @@ class AuthController
                 $_SESSION['user_name']  = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
                 $_SESSION['user_email'] = $user['email'];
 
-                // Redirect ke halaman yang diminta atau profil
                 if (isset($_SESSION['redirect_after_login'])) {
                     $redirect = $_SESSION['redirect_after_login'];
                     unset($_SESSION['redirect_after_login']);

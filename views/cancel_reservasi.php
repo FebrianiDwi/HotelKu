@@ -1,5 +1,25 @@
 <?php
+session_start();
+require_once __DIR__ . '/../config/koneksi.php';
+require_once __DIR__ . '/../models/CancellationModel.php';
+
 $pageTitle = 'ReservaStay - Pembatalan Reservasi';
+
+$cancellationModel = new CancellationModel($conn);
+$cancellations = [];
+
+if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+    $cancellations = $cancellationModel->getUserCancellations($_SESSION['user_id']);
+}
+
+function formatCancellationStatus($status) {
+    $statusMap = [
+        'pending' => 'Diproses',
+        'approved' => 'Disetujui',
+        'rejected' => 'Ditolak'
+    ];
+    return $statusMap[$status] ?? ucfirst($status);
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -69,10 +89,30 @@ $pageTitle = 'ReservaStay - Pembatalan Reservasi';
                                     </tr>
                                 </thead>
                                 <tbody id="cancellationStatusTable">
-                                    <!-- Data akan diisi oleh JavaScript atau PHP -->
-                                    <tr>
-                                        <td colspan="5" class="text-center">Belum ada pengajuan pembatalan</td>
-                                    </tr>
+                                    <?php if (empty($cancellations)): ?>
+                                        <tr>
+                                            <td colspan="5" class="text-center">Belum ada pengajuan pembatalan</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach ($cancellations as $cancel): 
+                                            $submissionDate = date('d F Y', strtotime($cancel['submission_date'] ?? $cancel['created_at']));
+                                            $reasonText = $cancellationModel->getCancellationReasonText($cancel['reason']);
+                                            $statusText = formatCancellationStatus($cancel['status']);
+                                            $statusClass = $cancel['status'] == 'approved' ? 'status-confirmed' : ($cancel['status'] == 'rejected' ? 'status-pending' : 'status-pending');
+                                        ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($cancel['booking_code']); ?></td>
+                                            <td><?php echo $submissionDate; ?></td>
+                                            <td><?php echo htmlspecialchars($reasonText); ?></td>
+                                            <td>
+                                                <span class="status-badge <?php echo $statusClass; ?>">
+                                                    <?php echo $statusText; ?>
+                                                </span>
+                                            </td>
+                                            <td><?php echo !empty($cancel['admin_response']) ? htmlspecialchars($cancel['admin_response']) : '-'; ?></td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -102,10 +142,9 @@ $pageTitle = 'ReservaStay - Pembatalan Reservasi';
 
     <script src="../script.js"></script>
     <script>
-    // Inisialisasi Aplikasi
     document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi komponen
-        loadDashboardData();
+        initForms();
+        initModals();
     });
     </script>
 </body>

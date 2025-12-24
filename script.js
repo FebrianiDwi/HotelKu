@@ -194,11 +194,11 @@ function initForms() {
     //     });
     // }
     
-    // Form Check-in
-    const checkinForm = document.getElementById('checkinForm');
-    if (checkinForm) {
-        checkinForm.addEventListener('submit', handleCheckinSubmit);
-    }
+    // Form Check-in - Biarkan form submit normal ke PHP (tidak pakai JavaScript)
+    // const checkinForm = document.getElementById('checkinForm');
+    // if (checkinForm) {
+    //     checkinForm.addEventListener('submit', handleCheckinSubmit);
+    // }
     
     // Form Pembatalan
     const cancellationForm = document.getElementById('cancellationForm');

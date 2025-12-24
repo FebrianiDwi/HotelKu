@@ -2,16 +2,15 @@
 session_start();
 require_once __DIR__ . '/../config/koneksi.php';
 require_once __DIR__ . '/../models/UserModel.php';
+require_once __DIR__ . '/../models/ReservationModel.php';
 
 $pageTitle = 'ReservaStay - Profil';
 
-// Cek apakah user sudah login
 if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     header('Location: login_register.php');
     exit;
 }
 
-// Ambil data user dari database
 $userModel = new UserModel($conn);
 $user = $userModel->findById($_SESSION['user_id']);
 
@@ -21,8 +20,47 @@ if (!$user || empty($user)) {
     exit;
 }
 
-// Format tanggal join
+$reservationModel = new ReservationModel($conn);
+$reservations = $reservationModel->getUserReservations($_SESSION['user_id']);
+$totalReservations = count($reservations);
+$today = date('Y-m-d');
+$activeReservations = 0;
+$completedReservations = 0;
+$cancelledReservations = 0;
+
+foreach ($reservations as $res) {
+    if ($res['status'] == 'cancelled') {
+        $cancelledReservations++;
+    } elseif (in_array($res['status'], ['confirmed', 'checked_in']) && $res['checkin_date'] >= $today) {
+        $activeReservations++;
+    } elseif ($res['checkout_date'] < $today && $res['status'] != 'cancelled') {
+        $completedReservations++;
+    }
+}
+
 $joinDate = isset($user['join_date']) ? date('d F Y', strtotime($user['join_date'])) : '-';
+
+function formatStatus($status) {
+    $statusMap = [
+        'pending' => 'Menunggu',
+        'confirmed' => 'Dikonfirmasi',
+        'checked_in' => 'Check-in',
+        'checked_out' => 'Check-out',
+        'completed' => 'Selesai',
+        'cancelled' => 'Dibatalkan'
+    ];
+    return $statusMap[$status] ?? ucfirst($status);
+}
+
+function getRoomTypeName($typeCode) {
+    $typeMap = [
+        'standard' => 'Standard Room',
+        'deluxe' => 'Deluxe Room',
+        'suite' => 'Suite Room',
+        'executive' => 'Executive Room'
+    ];
+    return $typeMap[$typeCode] ?? $typeCode;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -59,10 +97,10 @@ $joinDate = isset($user['join_date']) ? date('d F Y', strtotime($user['join_date
                         </div>
                         <div class="form-group">
                             <h3 style="margin-bottom: 20px;">Statistik Reservasi</h3>
-                            <p><strong>Total Reservasi:</strong> <span id="totalReservations">0</span></p>
-                            <p><strong>Reservasi Aktif:</strong> <span id="activeReservations">0</span></p>
-                            <p><strong>Reservasi Selesai:</strong> <span id="completedReservations">0</span></p>
-                            <p><strong>Pembatalan:</strong> <span id="cancelledReservations">0</span></p>
+                            <p><strong>Total Reservasi:</strong> <?php echo $totalReservations; ?></p>
+                            <p><strong>Reservasi Aktif:</strong> <?php echo $activeReservations; ?></p>
+                            <p><strong>Reservasi Selesai:</strong> <?php echo $completedReservations; ?></p>
+                            <p><strong>Pembatalan:</strong> <?php echo $cancelledReservations; ?></p>
                         </div>
                     </div>
                 </div>
@@ -81,10 +119,33 @@ $joinDate = isset($user['join_date']) ? date('d F Y', strtotime($user['join_date
                             </tr>
                         </thead>
                         <tbody id="reservationHistory">
-                            <!-- Data akan diisi oleh JavaScript atau PHP -->
-                            <tr>
-                                <td colspan="6" class="text-center">Belum ada reservasi</td>
-                            </tr>
+                            <?php if (empty($reservations)): ?>
+                                <tr>
+                                    <td colspan="6" class="text-center">Belum ada reservasi</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($reservations as $res): 
+                                    $nights = (strtotime($res['checkout_date']) - strtotime($res['checkin_date'])) / 86400;
+                                    if ($nights < 1) $nights = 1;
+                                    $checkinFormatted = date('d M Y', strtotime($res['checkin_date']));
+                                    $checkoutFormatted = date('d M Y', strtotime($res['checkout_date']));
+                                ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($res['booking_code']); ?></td>
+                                    <td><?php echo htmlspecialchars($res['type_name'] ?? getRoomTypeName($res['type_code'] ?? '')); ?></td>
+                                    <td><?php echo $checkinFormatted; ?> - <?php echo $checkoutFormatted; ?></td>
+                                    <td><?php echo $nights; ?> malam</td>
+                                    <td>
+                                        <span class="status-badge status-<?php echo htmlspecialchars($res['status']); ?>">
+                                            <?php echo formatStatus($res['status']); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewReservationDetail('<?php echo htmlspecialchars($res['booking_code']); ?>')">Detail</button>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -112,11 +173,12 @@ $joinDate = isset($user['join_date']) ? date('d F Y', strtotime($user['join_date
 
     <script src="../script.js"></script>
     <script>
-    // Inisialisasi Aplikasi
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi komponen
-        loadProfileData();
-    });
+    // Fungsi untuk View Detail Reservasi (jika diperlukan)
+    function viewReservationDetail(bookingCode) {
+        alert('Detail reservasi: ' + bookingCode);
+        // Bisa diimplementasikan modal atau redirect ke halaman detail
+    }
+    window.viewReservationDetail = viewReservationDetail;
     </script>
 </body>
 </html>
