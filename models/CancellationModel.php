@@ -69,5 +69,24 @@ class CancellationModel
         ];
         return $reasonMap[$reason] ?? $reason;
     }
-}
 
+    public function createCancellation($reservationId, $bookingCode, $reason, $details = '')
+    {
+        $reservationIdEsc = (int)$reservationId;
+        $bookingCodeEsc = mysqli_real_escape_string($this->conn, $bookingCode);
+        $reasonEsc = mysqli_real_escape_string($this->conn, $reason);
+        $detailsEsc = mysqli_real_escape_string($this->conn, $details);
+
+        $sql = "INSERT INTO cancellations (reservation_id, booking_code, submission_date, reason, details, status, created_at) 
+                VALUES ($reservationIdEsc, '$bookingCodeEsc', CURDATE(), '$reasonEsc', '$detailsEsc', 'pending', NOW())";
+
+        if (mysqli_query($this->conn, $sql)) {
+            return [
+                'success' => true,
+                'cancellation_id' => mysqli_insert_id($this->conn)
+            ];
+        }
+        
+        return ['success' => false, 'error' => mysqli_error($this->conn)];
+    }
+}

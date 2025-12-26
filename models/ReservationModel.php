@@ -111,12 +111,18 @@ class ReservationModel
         return $reservations;
     }
 
-    public function getReservationByBookingCode($bookingCode)
+    public function getReservationByBookingCode($bookingCode, $userId = null)
     {
-        $codeEsc = mysqli_real_escape_string($this->conn, trim($bookingCode));
+        $bookingCode = trim($bookingCode);
+        $codeEsc = mysqli_real_escape_string($this->conn, $bookingCode);
         $sql = "SELECT r.*, rt.type_name, rt.type_code FROM reservations r 
                 LEFT JOIN room_types rt ON r.room_type_id = rt.id 
-                WHERE r.booking_code = '$codeEsc' LIMIT 1";
+                WHERE r.booking_code = '$codeEsc'";
+        if ($userId !== null) {
+            $userIdEsc = (int)$userId;
+            $sql .= " AND r.user_id = $userIdEsc";
+        }
+        $sql .= " LIMIT 1";
         $result = mysqli_query($this->conn, $sql);
         if ($result && mysqli_num_rows($result) > 0) {
             return mysqli_fetch_assoc($result);

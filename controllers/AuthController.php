@@ -10,7 +10,7 @@ class AuthController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $this->conn      = $conn;
+        $this->conn = $conn;
         require_once __DIR__ . '/../models/UserModel.php';
         $this->userModel = new UserModel($this->conn);
     }
@@ -28,11 +28,10 @@ class AuthController
         $user = $this->userModel->findByEmail($email);
 
         if ($user && isset($user['password']) && password_verify($password, $user['password'])) {
-            $_SESSION['user_id']    = $user['id'];
-            $_SESSION['user_name']  = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
             $_SESSION['user_email'] = $user['email'];
 
-            // Redirect ke halaman yang diminta atau profil
             if (isset($_SESSION['redirect_after_login'])) {
                 $redirect = $_SESSION['redirect_after_login'];
                 unset($_SESSION['redirect_after_login']);
@@ -76,8 +75,8 @@ class AuthController
         if ($createResult) {
             $user = $this->userModel->findByEmail($email);
             if ($user) {
-                $_SESSION['user_id']    = $user['id'];
-                $_SESSION['user_name']  = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
                 $_SESSION['user_email'] = $user['email'];
 
                 if (isset($_SESSION['redirect_after_login'])) {
@@ -89,17 +88,13 @@ class AuthController
                 }
                 exit;
             } else {
-                error_log('AuthController::register Error: User berhasil dibuat tapi tidak ditemukan setelah insert. Email: ' . $email);
-                header('Location: ../views/login_register.php?register_error=failed&msg=not_found');
+                header('Location: ../views/login_register.php?register_error=failed');
                 exit;
             }
         }
 
-        $dbError = mysqli_error($this->conn);
-        error_log('AuthController::register Error: Gagal membuat user baru. DB Error: ' . $dbError);
-        header('Location: ../views/login_register.php?register_error=failed&msg=' . urlencode($dbError));
+        header('Location: ../views/login_register.php?register_error=failed');
         exit;
     }
 }
-
 

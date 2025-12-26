@@ -200,11 +200,11 @@ function initForms() {
     //     checkinForm.addEventListener('submit', handleCheckinSubmit);
     // }
     
-    // Form Pembatalan
-    const cancellationForm = document.getElementById('cancellationForm');
-    if (cancellationForm) {
-        cancellationForm.addEventListener('submit', handleCancellationSubmit);
-    }
+    // Form Pembatalan - Disabled untuk menggunakan PHP backend
+    // const cancellationForm = document.getElementById('cancellationForm');
+    // if (cancellationForm) {
+    //     cancellationForm.addEventListener('submit', handleCancellationSubmit);
+    // }
     
     // Tombol Logout
     const logoutBtn = document.getElementById('logoutBtn');
