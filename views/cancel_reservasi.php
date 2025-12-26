@@ -2,15 +2,29 @@
 session_start();
 require_once __DIR__ . '/../config/koneksi.php';
 require_once __DIR__ . '/../models/CancellationModel.php';
+require_once __DIR__ . '/../models/ReservationModel.php';
+
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+    $_SESSION['redirect_after_login'] = 'cancel_reservasi.php';
+    header('Location: login_register.php');
+    exit;
+}
 
 $pageTitle = 'ReservaStay - Pembatalan Reservasi';
 
 $cancellationModel = new CancellationModel($conn);
-$cancellations = [];
+$cancellations = $cancellationModel->getUserCancellations($_SESSION['user_id']);
 
-if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-    $cancellations = $cancellationModel->getUserCancellations($_SESSION['user_id']);
-}
+$reservationModel = new ReservationModel($conn);
+$userReservations = $reservationModel->getUserReservations($_SESSION['user_id']);
+$availableReservations = array_filter($userReservations, function($res) {
+    return $res['status'] != 'cancelled' && $res['status'] != 'checked_out' && $res['status'] != 'completed';
+});
+$availableReservations = array_values($availableReservations);
+
+$success = isset($_GET['success']) && $_GET['success'] == '1';
+$bookingCode = isset($_GET['booking_code']) ? $_GET['booking_code'] : '';
+$error = isset($_GET['error']) ? $_GET['error'] : '';
 
 function formatCancellationStatus($status) {
     $statusMap = [
@@ -40,10 +54,52 @@ function formatCancellationStatus($status) {
                     <h2 class="form-title">Pengajuan Pembatalan Reservasi</h2>
                     <p class="text-center" style="margin-bottom: 30px; color: var(--gray-dark);">Ajukan pembatalan reservasi beserta alasan pembatalan.</p>
                     
-                    <form id="cancellationForm" action="../functions/pembatalan_process.php" method="POST">
+                    <?php if ($success && $bookingCode): ?>
+                    <div class="alert alert-success" style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; margin-bottom: 20px;">
+                        <strong>Pengajuan Pembatalan Berhasil!</strong><br>
+                        Kode Booking: <strong><?php echo htmlspecialchars($bookingCode); ?></strong><br>
+                        Pengajuan Anda sedang diproses. Kami akan menghubungi Anda dalam 1-2 hari kerja.
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($error): ?>
+                    <div class="alert alert-danger" style="padding: 15px; background-color: #f8d7da; color: #721c24; border-radius: 5px; margin-bottom: 20px;">
+                        <?php
+                        $errorMessages = [
+                            'empty_booking_code' => 'Kode booking wajib diisi',
+                            'empty_reason' => 'Alasan pembatalan wajib dipilih',
+                            'invalid_reason' => 'Alasan pembatalan tidak valid',
+                            'booking_not_found' => 'Kode booking tidak ditemukan',
+                            'unauthorized' => 'Anda tidak memiliki akses untuk membatalkan reservasi ini',
+                            'already_cancelled' => 'Reservasi ini sudah dibatalkan',
+                            'already_submitted' => 'Sudah ada pengajuan pembatalan yang sedang diproses untuk reservasi ini',
+                            'create_failed' => 'Gagal membuat pengajuan pembatalan, coba lagi',
+                            'invalid_method' => 'Metode request tidak valid'
+                        ];
+                        echo htmlspecialchars($errorMessages[$error] ?? 'Terjadi kesalahan');
+                        ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <form id="cancellationForm" action="../controllers/pembatalan_process.php" method="POST">
                         <div class="form-group">
                             <label for="cancellationBookingCode" class="form-label">Kode Booking</label>
-                            <input type="text" id="cancellationBookingCode" name="booking_code" class="form-input" placeholder="Masukkan kode booking yang akan dibatalkan" required>
+                            <?php if (!empty($availableReservations)): ?>
+                                <select id="cancellationBookingCode" name="booking_code" class="form-select" required>
+                                    <option value="">Pilih Kode Booking</option>
+                                    <?php foreach ($availableReservations as $res): ?>
+                                        <option value="<?php echo htmlspecialchars($res['booking_code'], ENT_QUOTES, 'UTF-8'); ?>">
+                                            <?php echo htmlspecialchars($res['booking_code']); ?> - 
+                                            <?php echo htmlspecialchars($res['type_name'] ?? 'N/A'); ?> - 
+                                            Check-in: <?php echo date('d/m/Y', strtotime($res['checkin_date'])); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <small style="color: #666; display: block; margin-top: 5px;">Pilih reservasi yang ingin dibatalkan</small>
+                            <?php else: ?>
+                                <input type="text" id="cancellationBookingCode" name="booking_code" class="form-input" placeholder="Masukkan kode booking yang akan dibatalkan" required>
+                                <small style="color: #d32f2f; display: block; margin-top: 5px;">Anda tidak memiliki reservasi yang dapat dibatalkan</small>
+                            <?php endif; ?>
                             <div class="form-feedback" id="cancellationBookingCodeFeedback"></div>
                         </div>
                         
