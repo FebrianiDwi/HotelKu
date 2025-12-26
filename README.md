@@ -103,11 +103,5 @@ Shindy/
 - Pastikan `session_start()` ada di file yang membutuhkan session
 - Clear browser cache dan cookies
 
-## 👨‍💻 Developer
-
-Dikembangkan untuk memenuhi requirement tugas aplikasi manajemen reservasi (Kelas B - Akomodasi)
-
----
-
 **Happy Coding! 🚀**
 
