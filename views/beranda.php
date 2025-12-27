@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'ReservaStay - Beranda';
 ?>
 <!DOCTYPE html>
@@ -7,6 +8,7 @@ $pageTitle = 'ReservaStay - Beranda';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
+    <link rel="icon" href="res/emoji.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -18,13 +20,13 @@ $pageTitle = 'ReservaStay - Beranda';
                 <div class="container">
                     <div class="hero-content">
                         <div class="hero-text slide-in-left">
-                            <h1 class="hero-title">Reservasi Akomodasi Jadi Lebih Mudah</h1>
-                            <p class="hero-subtitle">Platform digital terpercaya dengan check-in online, pembayaran aman, dan layanan 24 jam</p>
+                            <h1 class="hero-title">Reservasi Hotel Jadi Lebih Mudah</h1>
+                            <p class="hero-subtitle">Website check-in online, gapake antre, langsung rebahan di kamar.</p>
                             <a href="reservasi_form.php" class="btn btn-primary">Reservasi Sekarang</a>
                         </div>
                         <div class="hero-image slide-in-right">
-                            <div class="hero-image-placeholder" style="width: 100%; height: 300px; background-color: var(--primary-light); border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; color: var(--primary-color);">
-                                <i class="fas fa-hotel" style="font-size: 10rem;"></i>
+                            <div class="hero-image-placeholder" style="width: 100%; height: 300px; border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; color: var(--primary-color);">
+                                <img src="../res/emoji.png" alt="Emoji" style="width: 50%">
                             </div>
                         </div>
                     </div>
@@ -35,11 +37,11 @@ $pageTitle = 'ReservaStay - Beranda';
                 <div class="container">
                     <div class="stats-container">
                         <div class="stat-item">
-                            <div class="stat-number">10K+</div>
+                            <div class="stat-number">67K+</div>
                             <div class="stat-label">Tamu Puas</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number">4.9</div>
+                            <div class="stat-number">9999</div>
                             <div class="stat-label">Rating Google</div>
                         </div>
                         <div class="stat-item">
@@ -91,8 +93,8 @@ $pageTitle = 'ReservaStay - Beranda';
             <!-- Booking Steps -->
             <div class="booking-steps">
                 <div class="container">
-                    <h2 class="section-title">Alur Reservasi yang Simpel</h2>
-                    <p class="text-center" style="margin-bottom: 50px; color: var(--gray-dark); max-width: 700px; margin-left: auto; margin-right: auto;">Hanya 4 langkah mudah untuk mendapatkan kamar impian Anda</p>
+                    <h2 class="section-title">Alur Reservasi</h2>
+                    <p class="text-center" style="margin-bottom: 50px; color: var(--gray-dark); max-width: 700px; margin-left: auto; margin-right: auto;">Cukup 4 langkah simpel, gak perlu ribet urus ini-itu.</p>
                     <div class="steps-container">
                         <div class="step fade-in">
                             <div class="step-number">1</div>
@@ -126,7 +128,7 @@ $pageTitle = 'ReservaStay - Beranda';
                     <div class="rooms-grid">
                         <div class="room-card fade-in">
                             <div class="room-image">
-                                <i class="fas fa-bed"></i>
+                                <img src="../res/standard_hotel.jpeg" alt="Standard room image" style="height: 100%; width:100%">
                             </div>
                             <div class="room-content">
                                 <h3 class="room-title">Standard Room</h3>
@@ -143,7 +145,7 @@ $pageTitle = 'ReservaStay - Beranda';
                         
                         <div class="room-card fade-in">
                             <div class="room-image">
-                                <i class="fas fa-bed"></i>
+                                <img src="../res/deluxe_hotel.jpeg" alt="Deluxe room image" style="height: 100%; width:100%">
                             </div>
                             <div class="room-content">
                                 <h3 class="room-title">Deluxe Room</h3>
@@ -162,7 +164,7 @@ $pageTitle = 'ReservaStay - Beranda';
                         
                         <div class="room-card fade-in">
                             <div class="room-image">
-                                <i class="fas fa-bed"></i>
+                                <img src="../res/suite_hotel.jpeg" alt="Suite room image" style="height: 100%; width:100%">
                             </div>
                             <div class="room-content">
                                 <h3 class="room-title">Suite Room</h3>
@@ -190,37 +192,28 @@ $pageTitle = 'ReservaStay - Beranda';
                     <p class="text-center" style="margin-bottom: 50px; color: var(--gray-dark); max-width: 700px; margin-left: auto; margin-right: auto;">Kepuasan tamu adalah prioritas utama kami</p>
                     <div class="testimonials-grid">
                         <div class="testimonial-card fade-in">
-                            <p class="testimonial-text">"Pengalaman menginap yang luar biasa! Check-in online sangat memudahkan dan kamarnya bersih & nyaman."</p>
+                            <p class="testimonial-text">"Mantap euyy, hotel termurah ada wifinya 2TB/s"</p>
                             <div class="testimonial-author">
-                                <div class="author-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
                                 <div class="author-info">
-                                    <h4>Sarah Johnson</h4>
+                                    <h4>Mas Andreana</h4>
                                     <p>2 minggu lalu</p>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="testimonial-card fade-in">
-                            <p class="testimonial-text">"Pelayanan sangat memuaskan, lokasi strategis, dan harga terjangkau. Sangat direkomendasikan!"</p>
+                            <p class="testimonial-text">"Harganya terjangkau, tapi layanannya mantap"</p>
                             <div class="testimonial-author">
-                                <div class="author-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
                                 <div class="author-info">
-                                    <h4>Michael Chen</h4>
+                                    <h4>Michel</h4>
                                     <p>1 bulan lalu</p>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="testimonial-card fade-in">
-                            <p class="testimonial-text">"Sistem reservasi mudah dipahami, staff ramah, fasilitas lengkap. Pasti akan kembali lagi!"</p>
+                            <p class="testimonial-text">"Sistem reservasi mudah dipahami, Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
                             <div class="testimonial-author">
-                                <div class="author-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
                                 <div class="author-info">
                                     <h4>Diana Putri</h4>
                                     <p>3 minggu lalu</p>

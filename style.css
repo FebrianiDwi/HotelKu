@@ -1,22 +1,31 @@
-/* CSS Reset dan Variabel */
-        :root {
-            --primary-color: #1452F1;
-            --primary-light: #e8efff;
-            --primary-dark: #0d3bb0;
-            --secondary-color: #2d3748;
-            --light-color: #f8f9fa;
-            --dark-color: #1a202c;
-            --gray-light: #e2e8f0;
-            --gray-medium: #a0aec0;
-            --gray-dark: #4a5568;
-            --success-color: #38a169;
-            --warning-color: #d69e2e;
-            --error-color: #e53e3e;
-            --info-color: #3182ce;
-            --border-radius: 8px;
-            --transition-speed: 0.3s;
-            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+/* CSS Reset dan Variabel - Human Curated Palette */
+:root {
+    /* Menggunakan Navy yang lebih dalam dan Teal sebagai aksen agar tidak terlihat seperti template standar AI */
+    --primary-color: #2D5A27;    /* Forest Green yang elegan */
+    --primary-light: #F1F5F0;   /* Creamy Off-white dengan hint hijau */
+    --primary-dark: #1B3618;    
+    
+    --secondary-color: #4A443F;  /* Warm Charcoal */
+    
+    /* Warna latar belakang yang tidak murni putih/abu agar lebih nyaman di mata */
+    --light-color: #FCFAFA;     
+    --dark-color: #242424;      
+    
+    /* Skala abu-abu dengan sedikit campuran warna hangat (Warm Grays) */
+    --gray-light: #EDE9E6;      
+    --gray-medium: #B2A9A1;     
+    --gray-dark: #6B635B;       
+
+    /* Status colors yang lebih 'muted' (lembut), tidak terlalu mencolok */
+    --success-color: #538D4E;   
+    --warning-color: #C28C32;   
+    --error-color: #9B3D3D;     
+    --info-color: #4B79A1;      
+
+    --border-radius: 12px;       /* Sedikit lebih bulat agar terasa modern */
+    --transition-speed: 0.4s;    /* Transisi sedikit lebih lambat agar terasa smooth */
+    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
         
         * {
             margin: 0;
@@ -30,6 +39,7 @@
             color: var(--dark-color);
             background-color: var(--light-color);
             overflow-x: hidden;
+            margin-top: 6.5rem;
         }
         
         a {
@@ -98,7 +108,6 @@
         
         .btn-primary:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-2px);
         }
         
         .btn-secondary {
@@ -136,7 +145,6 @@
         
         .section-title {
             font-size: 2rem;
-            margin-bottom: 30px;
             color: var(--secondary-color);
             text-align: center;
         }
@@ -144,7 +152,8 @@
         /* Header & Navigation */
         .header {
             background-color: white;
-            position: sticky;
+            position: absolute;
+            width: 100dvw;
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--gray-light);
@@ -275,8 +284,7 @@
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 10px;
+            color: var(--primary-color)
         }
         
         .stat-label {
@@ -303,9 +311,11 @@
             border-radius: var(--border-radius);
             transition: transform var(--transition-speed) ease;
             background-color: white;
+            user-select: none;
         }
         
         .feature-card:hover {
+            cursor: pointer;
             transform: translateY(-10px);
             border-color: var(--primary-color);
         }
@@ -318,7 +328,6 @@
         
         .feature-title {
             font-size: 1.3rem;
-            margin-bottom: 15px;
             color: var(--secondary-color);
         }
         
@@ -359,7 +368,6 @@
         
         .step-title {
             font-size: 1.2rem;
-            margin-bottom: 15px;
             color: var(--secondary-color);
         }
         
@@ -403,7 +411,6 @@
         
         .room-title {
             font-size: 1.5rem;
-            margin-bottom: 10px;
             color: var(--secondary-color);
         }
         
@@ -451,7 +458,6 @@
         }
         
         .testimonial-text {
-            font-style: italic;
             margin-bottom: 20px;
             color: var(--gray-dark);
         }
@@ -475,7 +481,6 @@
         }
         
         .author-info h4 {
-            margin-bottom: 5px;
             color: var(--secondary-color);
         }
         
@@ -494,7 +499,6 @@
         
         .cta-title {
             font-size: 2.5rem;
-            margin-bottom: 20px;
         }
         
         .cta-subtitle {
@@ -514,7 +518,6 @@
         
         .form-title {
             font-size: 1.8rem;
-            margin-bottom: 30px;
             color: var(--secondary-color);
             text-align: center;
         }
@@ -819,6 +822,7 @@
             background-color: var(--secondary-color);
             color: white;
             padding: 50px 0 20px;
+            margin-top: 3.5rem;
         }
         
         .footer-content {

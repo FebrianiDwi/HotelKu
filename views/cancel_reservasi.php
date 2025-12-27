@@ -97,8 +97,8 @@ function formatCancellationStatus($status) {
                                 </select>
                                 <small style="color: #666; display: block; margin-top: 5px;">Pilih reservasi yang ingin dibatalkan</small>
                             <?php else: ?>
-                                <input type="text" id="cancellationBookingCode" name="booking_code" class="form-input" placeholder="Masukkan kode booking yang akan dibatalkan" required>
-                                <small style="color: #d32f2f; display: block; margin-top: 5px;">Anda tidak memiliki reservasi yang dapat dibatalkan</small>
+                                <input type="text" id="cancellationBookingCode" name="booking_code" class="form-input" placeholder="Masukkan kode booking yang mau dibatalkan" required>
+                                <small style="color: #d32f2f; display: block; margin-top: 5px;">Anda blm memiliki reservasi yang dapat dibatalkan</small>
                             <?php endif; ?>
                             <div class="form-feedback" id="cancellationBookingCodeFeedback"></div>
                         </div>

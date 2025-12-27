@@ -42,8 +42,8 @@ function getArticleIcon($title) {
                 <div class="articles-grid">
                     <?php if (empty($articles)): ?>
                         <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                            <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--gray-dark); margin-bottom: 20px;"></i>
-                            <p style="color: var(--gray-dark);">Belum ada artikel yang dipublikasikan.</p>
+                            <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--gray-dark);"></i>
+                            <p style="color: var(--gray-dark);">Belum ada artikel.</p>
                         </div>
                     <?php else: ?>
                         <?php foreach ($articles as $article): 
