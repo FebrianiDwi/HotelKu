@@ -40,6 +40,8 @@ while ($row = mysqli_fetch_assoc($allUsersResult)) {
 
 $allBlogPosts = $blogModel->getAllPosts();
 
+$pendingCancellations = $cancellationModel->getPendingCancellations();
+
 function formatStatus($status) {
     $statusMap = [
         'pending' => 'Menunggu',
