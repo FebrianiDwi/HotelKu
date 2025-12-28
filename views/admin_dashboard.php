@@ -276,17 +276,166 @@ function formatStatus($status) {
     // Inisialisasi Aplikasi
     document.addEventListener('DOMContentLoaded', function() {
         // Inisialisasi komponen
-        initModals();
+        if (typeof initModals === 'function') {
+            initModals();
+        }
     });
     
-    // Fungsi placeholder untuk edit/delete (bisa diimplementasikan lebih lanjut)
+    // Fungsi untuk Edit Reservasi
     function editReservation(bookingCode) {
-        alert('Edit reservasi: ' + bookingCode);
+        // Fetch reservation data
+        fetch('../controllers/get_reservation_api.php?booking_code=' + encodeURIComponent(bookingCode))
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert('Error: ' + (data.error || 'Gagal memuat data reservasi'));
+                    return;
+                }
+                
+                const res = data.reservation;
+                const roomTypes = data.room_types;
+                
+                // Build room types options
+                let roomTypeOptions = '';
+                roomTypes.forEach(type => {
+                    const selected = res.room_type_id == type.id ? 'selected' : '';
+                    roomTypeOptions += `<option value="${type.id}" ${selected}>${type.type_name} - Rp ${parseInt(type.price_per_night).toLocaleString('id-ID')}/malam</option>`;
+                });
+                
+                // Build status options
+                const statusOptions = [
+                    { value: 'pending', label: 'Menunggu' },
+                    { value: 'confirmed', label: 'Dikonfirmasi' },
+                    { value: 'checked_in', label: 'Check-in' },
+                    { value: 'checked_out', label: 'Check-out' },
+                    { value: 'completed', label: 'Selesai' },
+                    { value: 'cancelled', label: 'Dibatalkan' }
+                ];
+                let statusOptionsHtml = '';
+                statusOptions.forEach(opt => {
+                    const selected = res.status === opt.value ? 'selected' : '';
+                    statusOptionsHtml += `<option value="${opt.value}" ${selected}>${opt.label}</option>`;
+                });
+                
+                const modalContent = `
+                    <form id="editReservationForm">
+                        <input type="hidden" id="editBookingCode" value="${res.booking_code}">
+                        <div class="form-group">
+                            <label for="editRoomType" class="form-label">Tipe Kamar</label>
+                            <select id="editRoomType" class="form-select" required>
+                                ${roomTypeOptions}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editRoomCount" class="form-label">Jumlah Kamar</label>
+                            <input type="number" id="editRoomCount" class="form-input" value="${res.room_count}" min="1" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editCheckin" class="form-label">Check-in</label>
+                                <input type="date" id="editCheckin" class="form-input" value="${res.checkin_date}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCheckout" class="form-label">Check-out</label>
+                                <input type="date" id="editCheckout" class="form-input" value="${res.checkout_date}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editGuestName" class="form-label">Nama Tamu</label>
+                            <input type="text" id="editGuestName" class="form-input" value="${res.guest_name}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editGuestEmail" class="form-label">Email Tamu</label>
+                            <input type="email" id="editGuestEmail" class="form-input" value="${res.guest_email}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editGuestPhone" class="form-label">Telepon Tamu</label>
+                            <input type="text" id="editGuestPhone" class="form-input" value="${res.guest_phone}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editSpecialRequests" class="form-label">Permintaan Khusus</label>
+                            <textarea id="editSpecialRequests" class="form-input" rows="3">${res.special_requests || ''}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editStatus" class="form-label">Status</label>
+                            <select id="editStatus" class="form-select" required>
+                                ${statusOptionsHtml}
+                            </select>
+                        </div>
+                    </form>
+                `;
+                
+                if (typeof showModal === 'function') {
+                    showModal(
+                        'Edit Reservasi',
+                        modalContent,
+                        [
+                            { 
+                                text: 'Simpan Perubahan', 
+                                class: 'btn-primary', 
+                                action: function() {
+                                    const formData = new FormData();
+                                    formData.append('booking_code', document.getElementById('editBookingCode').value);
+                                    formData.append('room_type_id', document.getElementById('editRoomType').value);
+                                    formData.append('room_count', document.getElementById('editRoomCount').value);
+                                    formData.append('checkin_date', document.getElementById('editCheckin').value);
+                                    formData.append('checkout_date', document.getElementById('editCheckout').value);
+                                    formData.append('guest_name', document.getElementById('editGuestName').value);
+                                    formData.append('guest_email', document.getElementById('editGuestEmail').value);
+                                    formData.append('guest_phone', document.getElementById('editGuestPhone').value);
+                                    formData.append('special_requests', document.getElementById('editSpecialRequests').value);
+                                    formData.append('status', document.getElementById('editStatus').value);
+                                    
+                                    fetch('../controllers/update_reservation_process.php', {
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            alert('Reservasi berhasil diperbarui');
+                                            location.reload();
+                                        } else {
+                                            alert('Error: ' + (data.error || 'Gagal memperbarui reservasi'));
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                        alert('Terjadi kesalahan saat memperbarui reservasi');
+                                    });
+                                }
+                            },
+                            { 
+                                text: 'Batal', 
+                                class: 'btn-secondary', 
+                                action: function() {
+                                    if (typeof closeModal === 'function') {
+                                        closeModal();
+                                    }
+                                }
+                            }
+                        ]
+                    );
+                } else {
+                    alert('Modal system not available');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memuat data reservasi');
+            });
     }
     
     function deleteReservation(bookingCode) {
         if (confirm('Apakah Anda yakin ingin menghapus reservasi ' + bookingCode + '?')) {
-            alert('Reservasi akan dihapus: ' + bookingCode);
+            alert('Fitur hapus reservasi belum diimplementasikan. Silakan ubah status menjadi "Dibatalkan" untuk membatalkan reservasi.');
         }
     }
     
