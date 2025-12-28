@@ -63,7 +63,6 @@ function formatStatus($status) {
 </head>
 <body>
     <?php include '../includes/navbar.php'; ?>
-    <!-- Dashboard Page -->
     <section id="dashboard" class="page">
         <div class="container">
             <div class="page">

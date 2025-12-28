@@ -11,24 +11,17 @@
                 <a href="beranda.php">Beranda</a>
                 <a href="reservasi_form.php">Reservasi</a>
                 <a href="blog.php">Blog</a>
-                <a href="admin_dashboard.php">Dashboard</a>
+                <a href="login_register.php">Masuk</a>
             </div>
             <div class="footer-section">
                 <h3>Kontak</h3>
-                <p><i class="fas fa-map-marker-alt"></i> Jl. Akomodasi No. 123, Jakarta</p>
-                <p><i class="fas fa-phone"></i> (021) 1234-5678</p>
-                <p><i class="fas fa-envelope"></i> info@hotelku.com</p>
-            </div>
-            <div class="footer-section">
-                <h3>Ikuti Kami</h3>
-                <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
-                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
-                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-                <a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <p><i class="fas fa-map-marker-alt"></i> Jl. Hotel keren, Mars</p>
+                <p><i class="fas fa-phone"></i> (62) 1234/p>
+                <p><i class="fas fa-envelope"></i> admin@hotelku.com</p>
             </div>
         </div>
         <div class="copyright">
-            &copy; <?php echo date('Y'); ?> HotelKu. Semua hak dilindungi.
+            &copy; <?php echo date('Y'); ?> HotelKu milikku
         </div>
     </div>
 </footer>
