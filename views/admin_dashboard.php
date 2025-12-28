@@ -40,6 +40,56 @@ while ($row = mysqli_fetch_assoc($allUsersResult)) {
 
 $allBlogPosts = $blogModel->getAllPosts();
 
+// Data untuk chart reservasi per bulan (12 bulan terakhir)
+$monthlyReservationsQuery = "SELECT 
+    DATE_FORMAT(created_at, '%Y-%m') as month,
+    COUNT(*) as count
+    FROM reservations
+    WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+    ORDER BY month ASC";
+$monthlyReservationsResult = mysqli_query($conn, $monthlyReservationsQuery);
+$monthLabels = [];
+$monthData = [];
+
+// Generate 12 bulan terakhir
+for ($i = 11; $i >= 0; $i--) {
+    $month = date('Y-m', strtotime("-$i months"));
+    $monthLabels[] = date('M Y', strtotime($month . '-01'));
+    $monthData[$month] = 0;
+}
+
+// Fill data dari database
+if ($monthlyReservationsResult) {
+    while ($row = mysqli_fetch_assoc($monthlyReservationsResult)) {
+        if (isset($monthData[$row['month']])) {
+            $monthData[$row['month']] = (int)$row['count'];
+        }
+    }
+}
+
+$monthlyData = array_values($monthData);
+
+// Data untuk chart distribusi tipe kamar
+$roomTypeDistributionQuery = "SELECT 
+    rt.type_name,
+    COUNT(r.id) as count
+    FROM reservations r
+    LEFT JOIN room_types rt ON r.room_type_id = rt.id
+    GROUP BY rt.id, rt.type_name
+    ORDER BY count DESC";
+$roomTypeDistributionResult = mysqli_query($conn, $roomTypeDistributionQuery);
+$roomTypeLabels = [];
+$roomTypeData = [];
+$roomTypeColors = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'];
+
+if ($roomTypeDistributionResult) {
+    while ($row = mysqli_fetch_assoc($roomTypeDistributionResult)) {
+        $roomTypeLabels[] = $row['type_name'] ?? 'Unknown';
+        $roomTypeData[] = (int)$row['count'];
+    }
+}
+
 function formatStatus($status) {
     $statusMap = [
         'pending' => 'Menunggu',
@@ -271,13 +321,125 @@ function formatStatus($status) {
         </div>
     </div>
 
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
     <script src="../script.js"></script>
     <script>
+    // Data untuk chart dari PHP
+    const monthlyChartData = {
+        labels: <?php echo json_encode($monthLabels); ?>,
+        data: <?php echo json_encode($monthlyData); ?>
+    };
+    
+    const roomTypeChartData = {
+        labels: <?php echo json_encode($roomTypeLabels); ?>,
+        data: <?php echo json_encode($roomTypeData); ?>,
+        colors: <?php echo json_encode(array_slice($roomTypeColors, 0, count($roomTypeLabels))); ?>
+    };
+    
     // Inisialisasi Aplikasi
     document.addEventListener('DOMContentLoaded', function() {
         // Inisialisasi komponen
-        initModals();
+        if (typeof initModals === 'function') {
+            initModals();
+        }
+        
+        // Initialize Charts
+        initializeCharts();
     });
+    
+    // Function to initialize charts
+    function initializeCharts() {
+        // Chart 1: Reservasi per Bulan (Line Chart)
+        const monthlyCtx = document.getElementById('monthlyReservationsChart');
+        if (monthlyCtx && typeof Chart !== 'undefined') {
+            new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: monthlyChartData.labels,
+                    datasets: [{
+                        label: 'Jumlah Reservasi',
+                        data: monthlyChartData.data,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Chart 2: Distribusi Tipe Kamar (Doughnut Chart)
+        const roomTypeCtx = document.getElementById('roomTypeDistributionChart');
+        if (roomTypeCtx && typeof Chart !== 'undefined') {
+            new Chart(roomTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: roomTypeChartData.labels,
+                    datasets: [{
+                        label: 'Jumlah Reservasi',
+                        data: roomTypeChartData.data,
+                        backgroundColor: roomTypeChartData.colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                    label += context.parsed + ' reservasi (' + percentage + '%)';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
     
     // Fungsi placeholder untuk edit/delete (bisa diimplementasikan lebih lanjut)
     function editReservation(bookingCode) {
