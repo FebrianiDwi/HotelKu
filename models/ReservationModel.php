@@ -129,5 +129,50 @@ class ReservationModel
         }
         return null;
     }
+
+    public function updateReservation($bookingCode, $roomTypeId, $roomCount, $checkin, $checkout, $guestName, $guestEmail, $guestPhone, $specialRequests, $status)
+    {
+        $codeEsc = mysqli_real_escape_string($this->conn, $bookingCode);
+        $typeIdEsc = (int)$roomTypeId;
+        $countEsc = (int)$roomCount;
+        $checkinEsc = mysqli_real_escape_string($this->conn, $checkin);
+        $checkoutEsc = mysqli_real_escape_string($this->conn, $checkout);
+        $nameEsc = mysqli_real_escape_string($this->conn, $guestName);
+        $emailEsc = mysqli_real_escape_string($this->conn, $guestEmail);
+        $phoneEsc = mysqli_real_escape_string($this->conn, $guestPhone);
+        $requestsEsc = mysqli_real_escape_string($this->conn, $specialRequests);
+        $statusEsc = mysqli_real_escape_string($this->conn, $status);
+
+        // Calculate new price
+        $totalPrice = $this->calculatePrice($typeIdEsc, $countEsc, $checkinEsc, $checkoutEsc);
+
+        // Check if updated_at column exists
+        $checkUpdatedAt = mysqli_query($this->conn, "SHOW COLUMNS FROM reservations LIKE 'updated_at'");
+        $hasUpdatedAt = $checkUpdatedAt && mysqli_num_rows($checkUpdatedAt) > 0;
+        
+        $sql = "UPDATE reservations SET 
+                room_type_id = $typeIdEsc,
+                room_count = $countEsc,
+                checkin_date = '$checkinEsc',
+                checkout_date = '$checkoutEsc',
+                guest_name = '$nameEsc',
+                guest_email = '$emailEsc',
+                guest_phone = '$phoneEsc',
+                special_requests = '$requestsEsc',
+                status = '$statusEsc',
+                total_price = $totalPrice";
+        
+        if ($hasUpdatedAt) {
+            $sql .= ", updated_at = NOW()";
+        }
+        
+        $sql .= " WHERE booking_code = '$codeEsc'";
+
+        if (mysqli_query($this->conn, $sql)) {
+            return ['success' => true];
+        }
+        
+        return ['success' => false, 'error' => mysqli_error($this->conn)];
+    }
 }
 
