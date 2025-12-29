@@ -817,6 +817,15 @@
             border-radius: var(--border-radius);
         }
         
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-container canvas {
+            max-height: 300px;
+        }
+        
         /* Footer */
         .footer {
             background-color: var(--secondary-color);
