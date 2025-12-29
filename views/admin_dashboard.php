@@ -315,6 +315,9 @@ require_once __DIR__ . '/../includes/admin/dashboard_data.php';
     
     <script src="../script.js"></script>
     <?php include '../includes/admin/dashboard_scripts.php'; ?>
-    <?php include '../includes/admin/dashboard_crud_scripts.php'; ?>
+    <?php include '../includes/admin/crud_reservation_scripts.php'; ?>
+    <?php include '../includes/admin/crud_user_scripts.php'; ?>
+    <?php include '../includes/admin/crud_blog_scripts.php'; ?>
+    <?php include '../includes/admin/crud_room_type_scripts.php'; ?>
 </body>
 </html>

@@ -349,10 +349,11 @@ HotelKu/
 - ✅ Cek console browser untuk error JavaScript
 - ✅ Pastikan canvas element ada di DOM
 
-### Login Tidak Bisa
+### Login Tidak Bisan
+
 - ✅ Pastikan database sudah di-import dengan benar
 - ✅ Cek email dan password sesuai dengan dummy account
-- ✅ Pastikan password di database sudah di-hash dengan bcrypt
+- ✅ Pastikan password di database sudah di-hash dengan bcHGJypt
 - ✅ Cek error log PHP untuk detail error
 
 ### CRUD Operations Tidak Bekerja

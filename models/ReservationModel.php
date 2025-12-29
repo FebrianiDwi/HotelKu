@@ -129,5 +129,65 @@ class ReservationModel
         }
         return null;
     }
+
+    public function updateReservation($bookingCode, $roomTypeId, $roomCount, $checkin, $checkout, $guestName, $guestEmail, $guestPhone, $specialRequests, $status = null, $totalPrice = null)
+    {
+        $codeEsc = mysqli_real_escape_string($this->conn, $bookingCode);
+        $typeIdEsc = (int)$roomTypeId;
+        $countEsc = (int)$roomCount;
+        $checkinEsc = mysqli_real_escape_string($this->conn, $checkin);
+        $checkoutEsc = mysqli_real_escape_string($this->conn, $checkout);
+        $nameEsc = mysqli_real_escape_string($this->conn, $guestName);
+        $emailEsc = mysqli_real_escape_string($this->conn, $guestEmail);
+        $phoneEsc = mysqli_real_escape_string($this->conn, $guestPhone);
+        $requestsEsc = mysqli_real_escape_string($this->conn, $specialRequests);
+
+        $updates = [
+            "room_type_id = $typeIdEsc",
+            "room_count = $countEsc",
+            "checkin_date = '$checkinEsc'",
+            "checkout_date = '$checkoutEsc'",
+            "guest_name = '$nameEsc'",
+            "guest_email = '$emailEsc'",
+            "guest_phone = '$phoneEsc'",
+            "special_requests = '$requestsEsc'"
+        ];
+
+        if ($totalPrice !== null) {
+            $priceEsc = (float)$totalPrice;
+            $updates[] = "total_price = $priceEsc";
+        }
+
+        if ($status !== null) {
+            $statusEsc = mysqli_real_escape_string($this->conn, $status);
+            $updates[] = "status = '$statusEsc'";
+        }
+
+        $sql = "UPDATE reservations SET " . implode(', ', $updates) . " WHERE booking_code = '$codeEsc'";
+
+        if (mysqli_query($this->conn, $sql)) {
+            return ['success' => true];
+        }
+        
+        return ['success' => false, 'error' => mysqli_error($this->conn)];
+    }
+
+    public function deleteReservation($bookingCode)
+    {
+        $codeEsc = mysqli_real_escape_string($this->conn, $bookingCode);
+        
+        // Hapus cancellation terkait terlebih dahulu (cascade delete)
+        $deleteCancellationSql = "DELETE FROM cancellations WHERE booking_code = '$codeEsc'";
+        mysqli_query($this->conn, $deleteCancellationSql);
+
+        // Hapus reservasi
+        $sql = "DELETE FROM reservations WHERE booking_code = '$codeEsc'";
+        
+        if (mysqli_query($this->conn, $sql)) {
+            return ['success' => true];
+        }
+        
+        return ['success' => false, 'error' => mysqli_error($this->conn)];
+    }
 }
 
