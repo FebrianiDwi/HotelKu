@@ -369,6 +369,3 @@ Proyek ini dibuat untuk keperluan edukasi dan pembelajaran.
 
 ---
 
-**Happy Coding! 🚀**
-
-*Last Updated: 2024*
