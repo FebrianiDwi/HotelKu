@@ -132,7 +132,6 @@ class UserModel
     {
         $idEsc = (int)$id;
         
-        // Prevent deleting yourself
         if (isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === $idEsc) {
             return ['success' => false, 'error' => 'Cannot delete your own account'];
         }
@@ -148,7 +147,6 @@ class UserModel
 
     public function createUserByAdmin($firstName, $lastName, $email, $password, $phone, $role = 'user', $status = 'active')
     {
-        // Check if email already exists
         $existing = $this->findByEmail($email);
         if ($existing) {
             return ['success' => false, 'error' => 'Email already exists'];

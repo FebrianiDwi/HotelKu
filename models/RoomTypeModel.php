@@ -76,7 +76,6 @@ class RoomTypeModel
         $occupancyEsc = (int)$maxOccupancy;
         $featuresEsc = mysqli_real_escape_string($this->conn, $features);
         
-        // Check if type_code already exists for other records
         $checkSql = "SELECT COUNT(*) as count FROM room_types WHERE type_code = '$codeEsc' AND id != $idEsc";
         $checkResult = mysqli_query($this->conn, $checkSql);
         if ($checkResult) {
@@ -119,7 +118,6 @@ class RoomTypeModel
     {
         $idEsc = (int)$id;
         
-        // Check if room type is being used in reservations
         $checkSql = "SELECT COUNT(*) as count FROM reservations WHERE room_type_id = $idEsc";
         $checkResult = mysqli_query($this->conn, $checkSql);
         if ($checkResult) {
