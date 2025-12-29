@@ -362,12 +362,6 @@ HotelKu/
 - ✅ Pastikan file controller ada dan accessible
 - ✅ Cek permission folder `res/` untuk upload
 
-## 📞 Kontak & Support
-
-- **Email:** admin@hotelku.com
-- **Phone:** (62) 1234
-- **Address:** Jl. Hotel keren, Mars
-
 ## 📄 License
 
 Proyek ini dibuat untuk keperluan edukasi dan pembelajaran.
