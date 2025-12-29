@@ -1,5 +1,4 @@
 <?php
-// Bagian Statistik Cards
 ?>
 <div class="stats-container">
     <div class="stat-card">
@@ -19,4 +18,3 @@
         <div class="stat-label">Tingkat Pembatalan</div>
     </div>
 </div>
-

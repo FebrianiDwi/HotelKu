@@ -33,13 +33,13 @@ Aplikasi web full-stack untuk manajemen reservasi akomodasi/hotel dengan fitur l
      ```
 
 4. **Akses Aplikasi**
-   - URL: `http://localhost/Shindy/`
-   - Atau: `http://127.0.0.1/Shindy/`
+   - URL: `http://localhost/Hotelku/`
+   - Atau: `http://127.0.0.1/Hotelku/`
 
 ## 👤 Akun Demo
 
 ### Admin
-- Email: `admin@hotelku.com`
+- Email: `User@gmail.com
 - Password: `admin123`
 
 ### User
@@ -49,7 +49,7 @@ Aplikasi web full-stack untuk manajemen reservasi akomodasi/hotel dengan fitur l
 ## 📁 Struktur Folder
 
 ```
-Shindy/
+Hotelku/
 ├── config/          # Konfigurasi database
 ├── controllers/     # Controller untuk handling request
 ├── models/          # Model untuk database operations
@@ -97,7 +97,7 @@ Shindy/
 
 ### Page Not Found
 - Pastikan folder project berada di `www` folder Laragon
-- Cek URL: `http://localhost/Shindy/` (sesuai nama folder)
+- Cek URL: `http://localhost/Hotelku/` (sesuai nama folder)
 
 ### Session Issues
 - Pastikan `session_start()` ada di file yang membutuhkan session

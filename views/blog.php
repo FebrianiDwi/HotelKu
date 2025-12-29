@@ -66,7 +66,7 @@ function getArticleIcon($title) {
                                     </p>
                                 <?php endif; ?>
                                 <p class="article-excerpt"><?php echo htmlspecialchars($excerpt); ?></p>
-                                <a href="#" class="btn btn-secondary btn-small">Baca Selengkapnya</a>
+                                <a href="blog_detail.php?slug=<?php echo htmlspecialchars($article['slug'] ?? ''); ?>" class="btn btn-secondary btn-small">Baca Selengkapnya</a>
                             </div>
                         </div>
                         <?php endforeach; ?>

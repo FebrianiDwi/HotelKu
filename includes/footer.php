@@ -15,9 +15,9 @@
             </div>
             <div class="footer-section">
                 <h3>Kontak</h3>
-                <p><i class="fas fa-map-marker-alt"></i> Jl. Hotel keren, Mars</p>
-                <p><i class="fas fa-phone"></i> (62) 1234/p>
-                <p><i class="fas fa-envelope"></i> admin@hotelku.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Jl. Akomodasi No. 123, Jakarta</p>
+                <p><i class="fas fa-phone"></i> (021) 1234-5678</p>
+                <p><i class="fas fa-envelope"></i> info@hotelku.com</p>
             </div>
         </div>
         <div class="copyright">

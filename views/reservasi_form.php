@@ -3,13 +3,12 @@ session_start();
 require_once __DIR__ . '/../config/koneksi.php';
 require_once __DIR__ . '/../models/ReservationModel.php';
 
-
-// if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-//     $_SESSION['redirect_after_login'] = basename($_SERVER['PHP_SELF']);
-    
-//     echo '<script>alert("Gas masuk ke akun Anda untuk melanjutkan."); window.location.href="login_register.php";</script>';
-//     exit;
-// }
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+    $_SESSION['redirect_after_login'] = 'reservasi_form.php';
+    header('Location: login_register.php');
+    exit;
+}
 
 $pageTitle = 'ReservaStay - Reservasi';
 $selectedRoomType = isset($_GET['room_type']) ? $_GET['room_type'] : '';

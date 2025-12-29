@@ -1,5 +1,4 @@
 <?php
-// Bagian Charts & Infografis
 ?>
 <div class="card">
     <h3 style="margin-bottom: 20px;">Grafik & Infografis</h3>
@@ -18,4 +17,3 @@
         </div>
     </div>
 </div>
-

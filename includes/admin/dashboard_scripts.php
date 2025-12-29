@@ -1,8 +1,6 @@
 <?php
-// JavaScript untuk Chart dan CRUD operations
 ?>
 <script>
-// Data untuk chart dari PHP
 const monthlyChartData = {
     labels: <?php echo json_encode($monthLabels); ?>,
     data: <?php echo json_encode($monthlyCounts); ?>
@@ -14,18 +12,12 @@ const roomTypeChartData = {
     colors: <?php echo json_encode(array_slice($roomTypeColors, 0, count($roomTypeLabels))); ?>
 };
 
-// Inisialisasi Aplikasi
 document.addEventListener('DOMContentLoaded', function() {
-    // Inisialisasi komponen
     initModals();
-    
-    // Inisialisasi Chart
     initializeCharts();
 });
 
-// Function to initialize charts
 function initializeCharts() {
-    // Chart 1: Reservasi per Bulan (Line Chart)
     const monthlyCtx = document.getElementById('monthlyReservationsChart');
     if (monthlyCtx && typeof Chart !== 'undefined') {
         new Chart(monthlyCtx, {
@@ -71,8 +63,7 @@ function initializeCharts() {
             }
         });
     }
-    
-    // Chart 2: Distribusi Tipe Kamar (Doughnut Chart)
+
     const roomTypeCtx = document.getElementById('roomTypeDistributionChart');
     if (roomTypeCtx && typeof Chart !== 'undefined') {
         new Chart(roomTypeCtx, {
@@ -114,4 +105,4 @@ function initializeCharts() {
         });
     }
 }
-
+</script>
