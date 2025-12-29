@@ -7,7 +7,7 @@ require_once __DIR__ . '/log_activity.php';
 // Check if user is logged in and is admin
 if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    echo json_encode(['success' => false, 'error' => 'Silakan login terlebih dahulu']);
     exit;
 }
 
@@ -16,7 +16,7 @@ $currentUser = $userModel->findById($_SESSION['user_id']);
 
 if (!$currentUser || ($currentUser['role'] ?? '') !== 'admin') {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Admin access required']);
+    echo json_encode(['success' => false, 'error' => 'Akses admin diperlukan. Pastikan Anda sudah login sebagai admin.']);
     exit;
 }
 

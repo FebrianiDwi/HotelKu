@@ -5,6 +5,11 @@ $roomTypeModel = new RoomTypeModel($conn);
 $allRoomTypes = $roomTypeModel->getAllRoomTypes();
 ?>
 <script>
+// Set room types untuk digunakan di showAddReservationModal
+window.dashboardRoomTypes = <?php echo json_encode($allRoomTypes); ?>;
+// Data tipe kamar untuk dipakai di semua modal (tambah & edit)
+window.dashboardRoomTypes = <?php echo json_encode($allRoomTypes); ?>;
+
 function editReservation(bookingCode) {
     fetch('../controllers/get_reservation_api.php?booking_code=' + encodeURIComponent(bookingCode))
         .then(response => response.json())
@@ -15,7 +20,7 @@ function editReservation(bookingCode) {
             }
 
             const res = data.reservation;
-            const allRoomTypes = <?php echo json_encode($allRoomTypes); ?>;
+            const allRoomTypes = window.dashboardRoomTypes || [];
             
             let roomTypeOptions = '';
             allRoomTypes.forEach(rt => {

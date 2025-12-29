@@ -8,7 +8,7 @@ require_once __DIR__ . '/log_activity.php';
 
 if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    echo json_encode(['success' => false, 'error' => 'Silakan login terlebih dahulu']);
     exit;
 }
 
@@ -17,7 +17,7 @@ $currentUser = $userModel->findById($_SESSION['user_id']);
 
 if (!$currentUser || ($currentUser['role'] ?? '') !== 'admin') {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Admin access required']);
+    echo json_encode(['success' => false, 'error' => 'Akses admin diperlukan. Pastikan Anda sudah login sebagai admin.']);
     exit;
 }
 
@@ -34,6 +34,59 @@ $roomTypeModel = new RoomTypeModel($conn);
 header('Content-Type: application/json');
 
 switch ($action) {
+    case 'create':
+        $roomTypeId = isset($_POST['room_type_id']) ? (int)$_POST['room_type_id'] : 0;
+        $roomCount = isset($_POST['room_count']) ? (int)$_POST['room_count'] : 1;
+        $checkin = isset($_POST['checkin_date']) ? trim($_POST['checkin_date']) : '';
+        $checkout = isset($_POST['checkout_date']) ? trim($_POST['checkout_date']) : '';
+        $guestName = isset($_POST['guest_name']) ? trim($_POST['guest_name']) : '';
+        $guestEmail = isset($_POST['guest_email']) ? trim($_POST['guest_email']) : '';
+        $guestPhone = isset($_POST['guest_phone']) ? trim($_POST['guest_phone']) : '';
+        $specialRequests = isset($_POST['special_requests']) ? trim($_POST['special_requests']) : '';
+        $status = isset($_POST['status']) ? trim($_POST['status']) : 'pending';
+        $userId = isset($_POST['user_id']) && !empty($_POST['user_id']) ? (int)$_POST['user_id'] : null;
+
+        if ($roomTypeId <= 0 || $roomCount < 1 || empty($checkin) || empty($checkout) || empty($guestName) || empty($guestEmail) || empty($guestPhone)) {
+            echo json_encode(['success' => false, 'error' => 'Semua field wajib diisi']);
+            exit;
+        }
+
+        if (strtotime($checkin) >= strtotime($checkout)) {
+            echo json_encode(['success' => false, 'error' => 'Tanggal check-out harus setelah check-in']);
+            exit;
+        }
+
+        if (strtotime($checkin) < strtotime(date('Y-m-d'))) {
+            echo json_encode(['success' => false, 'error' => 'Tanggal check-in tidak boleh di masa lalu']);
+            exit;
+        }
+
+        $totalPrice = $reservationModel->calculatePrice($roomTypeId, $roomCount, $checkin, $checkout);
+
+        $result = $reservationModel->createReservation(
+            $userId,
+            $roomTypeId,
+            $roomCount,
+            $checkin,
+            $checkout,
+            $guestName,
+            $guestEmail,
+            $guestPhone,
+            $specialRequests,
+            $totalPrice
+        );
+
+        if ($result['success']) {
+            // Update status if provided
+            if ($status !== 'pending') {
+                $reservationModel->updateReservation($result['booking_code'], $roomTypeId, $roomCount, $checkin, $checkout, $guestName, $guestEmail, $guestPhone, $specialRequests, $status, $totalPrice);
+            }
+            logAdminActivity('create', 'reservation', $result['reservation_id'] ?? null, "Created reservation: " . $result['booking_code']);
+        }
+        
+        echo json_encode($result);
+        break;
+
     case 'update':
         $bookingCode = isset($_POST['booking_code']) ? trim($_POST['booking_code']) : '';
         $roomTypeId = isset($_POST['room_type_id']) ? (int)$_POST['room_type_id'] : 0;

@@ -7,10 +7,23 @@ require_once __DIR__ . '/../models/BlogModel.php';
 require_once __DIR__ . '/../models/RoomTypeModel.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
 
+// Cek apakah user sudah login
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+    header('Location: login_register.php?error=login_required');
+    exit;
+}
+
+// Cek apakah user adalah admin
+$userModel = new UserModel($conn);
+$currentUser = $userModel->findById($_SESSION['user_id']);
+if (!$currentUser || ($currentUser['role'] ?? '') !== 'admin') {
+    header('Location: profil.php?error=admin_only');
+    exit;
+}
+
 $pageTitle = 'ReservaStay - Dashboard Admin';
 
 $reservationModel = new ReservationModel($conn);
-$userModel = new UserModel($conn);
 $blogModel = new BlogModel($conn);
 $roomTypeModel = new RoomTypeModel($conn);
 $activityLogModel = new ActivityLogModel($conn);
