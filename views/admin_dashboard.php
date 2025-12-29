@@ -310,6 +310,9 @@ require_once __DIR__ . '/../includes/admin/dashboard_data.php';
         </div>
     </div>
 
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
     <script src="../script.js"></script>
     <?php include '../includes/admin/dashboard_scripts.php'; ?>
     <?php include '../includes/admin/dashboard_crud_scripts.php'; ?>
