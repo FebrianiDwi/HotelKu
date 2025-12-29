@@ -8,27 +8,42 @@ function initNavigation() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const navLinksContainer = document.getElementById('navLinks');
     
+    if (!navLinks || navLinks.length === 0) return;
+    
+    // Hanya handle link dengan hash (#) untuk single-page navigation
+    // Link PHP (beranda.php, profil.php, dll) TIDAK diintervensi - biarkan browser redirect normal
     navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const pageId = this.getAttribute('href').substring(1);
-            window.location.hash = pageId;
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            showPage(pageId);
-            navLinksContainer.classList.remove('active');
-        });
+        const href = link.getAttribute('href');
+        // Hanya attach event listener untuk link dengan hash (#)
+        if (href && href.trim().startsWith('#')) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const pageId = href.substring(1);
+                window.location.hash = pageId;
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                if (typeof showPage === 'function') showPage(pageId);
+                if (navLinksContainer) navLinksContainer.classList.remove('active');
+            });
+        }
+        // Link PHP tidak perlu event listener - browser akan handle redirect secara normal
     });
     
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', () => navLinksContainer.classList.toggle('active'));
+    if (mobileMenuBtn && navLinksContainer) {
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navLinksContainer.classList.toggle('active');
+        });
     }
     
-    document.addEventListener('click', (e) => {
-        if (!navLinksContainer.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-            navLinksContainer.classList.remove('active');
-        }
-    });
+    if (navLinksContainer && mobileMenuBtn) {
+        document.addEventListener('click', (e) => {
+            if (!navLinksContainer.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                navLinksContainer.classList.remove('active');
+            }
+        });
+    }
 }
 
 function showPage(pageId) {
